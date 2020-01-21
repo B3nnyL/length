@@ -1,7 +1,20 @@
-const YARD = 'yard'
-const FOOT = 'f'
-const INCH = 'inch'
-
+const operationMap = {
+  yard: {
+    f: 3,
+    inch: 36,
+    yard: 1,
+  },
+  inch: {
+    yard: 1 / 36,
+    f: 1 / 12,
+    inch: 1,
+  },
+  f: {
+    yard: 1 / 3,
+    inch: 12,
+    f: 1,
+  },
+}
 export class Length {
   value
   unit
@@ -19,51 +32,12 @@ export class Length {
     return this.unit
   }
 
-  _parsedFromYard(targetUnit) {
-    if (targetUnit === FOOT) {
-      return new Length(this.value * 3, targetUnit)
-    }
-    if (targetUnit === INCH) {
-      return new Length(this.value * 36, targetUnit)
-    }
-  }
-
-  _parsedFromInch(targetUnit) {
-    if (targetUnit === YARD) {
-      return new Length(this.value / 36, targetUnit)
-    }
-    if (targetUnit === FOOT) {
-      return new Length(this.value / 12, targetUnit)
-    }
-  }
-
-  _parsedFromFoot(targetUnit) {
-    if (targetUnit === YARD) {
-      return new Length(this.value / 3, targetUnit)
-    }
-    if (targetUnit === INCH) {
-      return new Length(this.value * 12, targetUnit)
-    }
-  }
-
   parseTo(targetUnit) {
     const { unit } = this
-    if (unit === targetUnit) return this
 
-    let result
-    switch (unit) {
-      case YARD:
-        result = this._parsedFromYard(targetUnit)
-        break
-      case INCH:
-        result = this._parsedFromInch(targetUnit)
-        break
-      case FOOT:
-        result = this._parsedFromFoot(targetUnit)
-        break
-      default:
-        break
-    }
+    const operation = operationMap[unit][targetUnit]
+    let result = new Length(this.value * operation, targetUnit)
+
     return result
   }
 }
