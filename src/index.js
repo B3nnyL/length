@@ -1,4 +1,4 @@
-const operationMap = {
+const OPERATION_MAP = {
   yard: {
     f: 3,
     inch: 36,
@@ -35,7 +35,7 @@ export class Length {
   parseTo(targetUnit) {
     const { unit } = this
 
-    const operation = operationMap[unit][targetUnit]
+    const operation = OPERATION_MAP[unit][targetUnit]
     let result = new Length(this.value * operation, targetUnit)
 
     return result
