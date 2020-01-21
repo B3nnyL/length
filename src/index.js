@@ -1,3 +1,7 @@
+const YARD = 'yard'
+const FOOT = 'f'
+const INCH = 'inch'
+
 export class Length {
   value
   unit
@@ -15,32 +19,51 @@ export class Length {
     return this.unit
   }
 
-  parseTo(u) {
-    let len = this
-    if (this.unit === 'yard') {
-      if (u === 'f') {
-        len = new Length(this.value * 3, u)
-      } else if (u === 'inch') {
-        len = new Length(this.value * 36, u)
-      }
+  _parsedFromYard(targetUnit) {
+    if (targetUnit === FOOT) {
+      return new Length(this.value * 3, targetUnit)
     }
-
-    if (this.unit === 'inch') {
-      if (u === 'yard') {
-        len = new Length(this.value / 36, u)
-      } else if (u === 'f') {
-        len = new Length(this.value / 12, u)
-      }
+    if (targetUnit === INCH) {
+      return new Length(this.value * 36, targetUnit)
     }
+  }
 
-    if (this.unit === 'f') {
-      if (u === 'yard') {
-        len = new Length(this.value / 3, u)
-      } else if (u === 'inch') {
-        len = new Length(this.value * 12, u)
-      }
+  _parsedFromInch(targetUnit) {
+    if (targetUnit === YARD) {
+      return new Length(this.value / 36, targetUnit)
     }
+    if (targetUnit === FOOT) {
+      return new Length(this.value / 12, targetUnit)
+    }
+  }
 
-    return len
+  _parsedFromFoot(targetUnit) {
+    if (targetUnit === YARD) {
+      return new Length(this.value / 3, targetUnit)
+    }
+    if (targetUnit === INCH) {
+      return new Length(this.value * 12, targetUnit)
+    }
+  }
+
+  parseTo(targetUnit) {
+    const { unit } = this
+    if (unit === targetUnit) return this
+
+    let result
+    switch (unit) {
+      case YARD:
+        result = this._parsedFromYard(targetUnit)
+        break
+      case INCH:
+        result = this._parsedFromInch(targetUnit)
+        break
+      case FOOT:
+        result = this._parsedFromFoot(targetUnit)
+        break
+      default:
+        break
+    }
+    return result
   }
 }
